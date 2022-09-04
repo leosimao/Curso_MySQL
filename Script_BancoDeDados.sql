@@ -1,3 +1,5 @@
+DROP DATABASE IF EXISTS curso_banco;
+CREATE DATABASE curso_banco;
 USE curso_banco;
 
 CREATE TABLE estado (
@@ -29,7 +31,26 @@ CREATE TABLE tipo(
     ,data_cadastro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE cidade(
+	id INT NOT NULL PRIMARY KEY AUTO_INCREMENT
+    /* 
+    DIFERENTE DE ESTADO EU NÃO ESTOU DEFININDO A REGRA DA COLUNA id EM CONSTRAINT OUT LINE
+	ESTOU DEFINDO A REGRA JA NA COLUNA.
+    */
+    ,nome VARCHAR(200) NOT NULL
+    ,ativo CHAR(1) NOT NULL DEFAULT 'S'
+    ,data_cadastro DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+    ,id_estado INT NOT NULL
+    -- AQUI IREI DEFINIR A REGRA DA FK, MAS PODEMOS DEFINIR NA MESMA LINHA DO SEU NOME
+    ,CONSTRAINT fk_cidade_estado FOREIGN KEY (id_estado) REFERENCES estado (id)
+    ,CONSTRAINT cidade_unica UNIQUE (nome, id_estado)
+);
+
 -- INSERINDO VALORES EM ESTADO
 INSERT INTO estado (nome, sigla) VALUES ("PARANA", "PR");
 INSERT INTO estado (nome, sigla) VALUES ("SAO PAULO", "SP");
 INSERT INTO estado (nome, sigla) VALUES ("RIO GRANDE DO SUL", "RS");
+
+INSERT INTO cidade(nome, id_estado) VALUES ("PARANAVAI", 1);
+INSERT INTO cidade(nome, id_estado) VALUES("SAO PAULO", 2);
+INSERT INTO cidade(nome, id_estado) VALUES("UMUARAMA", 1)
