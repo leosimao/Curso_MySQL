@@ -66,9 +66,6 @@ CREATE TABLE equipamento(
 );
 
 CREATE TABLE aplicacao (
-/*
-COLCOCAR AS NOVAS FK E ADICIONAR AS NOVAS TABELAS DENTRO DO MODELO
-*/
 	id_aplicacao INT NOT NULL PRIMARY KEY UNIQUE AUTO_INCREMENT
     ,cod_aplicacao INT NOT NULL UNIQUE
     ,dt_aplicacao DATETIME NOT NULL
@@ -79,11 +76,12 @@ COLCOCAR AS NOVAS FK E ADICIONAR AS NOVAS TABELAS DENTRO DO MODELO
     ,id_operacao INT NOT NULL
     ,id_equipe INT NOT NULL
     ,id_estoque INT NOT NULL
+    ,id_equipamento INT NOT NULL
     ,CONSTRAINT fk_aplicacao_fazenda FOREIGN KEY (id_fazenda) REFERENCES fazenda(id_fazenda)
     ,CONSTRAINT fk_aplicacao_produto FOREIGN KEY (id_produto) REFERENCES produto(id_produto)
     ,CONSTRAINT fk_aplicacao_operacao FOREIGN KEY (id_operacao) REFERENCES operacao(id_operacao)
     ,CONSTRAINT fk_aplicacao_equipe FOREIGN KEY (id_equipe) REFERENCES equipe(id_equipe)
-    ,CONSTRAINT fk_aplicacao_estoque FOREIGN KEY (id_deposito) REFERENCES estoque(id_estoque)
+    ,CONSTRAINT fk_aplicacao_estoque FOREIGN KEY (id_estoque) REFERENCES estoque(id_estoque)
     ,CONSTRAINT fk_aplicacao_equipamento FOREIGN KEY (id_equipamento) REFERENCES equipamento(id_equipamento)
 );
 
@@ -93,15 +91,19 @@ CREATE TABLE ccusto(
 	,desc_ccusto VARCHAR(100) NOT NULL UNIQUE
 );
 
-CREATE TABLE custos(
+CREATE TABLE custo(
 	id_custo INT NOT NULL PRIMARY KEY UNIQUE AUTO_INCREMENT
 	,dt_custo DATETIME NOT NULL
-    ,qt_consumida DECIMAL(10, 2), NOT NULL
-    ,ativo CHAR(1) NOT NULL DEFAULT 'ABERTO'
+    ,qt_consumo DECIMAL(10, 2) NOT NULL
+    ,vl_consumo DECIMAL(10, 2) NOT NULL
+    ,ativo CHAR(1) NOT NULL DEFAULT 'A'
     ,id_aplicacao INT NOT NULL
     ,id_ccusto INT NOT NULL
-    ,CONSTRAINT fk_custos_aplicacao FOREIGN KEY (id_aplicacao) REFERENCES aplicacao(id_aplicacao)
-    ,CONSTRAINT fk_custos_ccusto FOREIGN KEY (id_ccusto) REFERENCES ccusto(id_ccusto)
+    ,id_produto INT NOT NULL
+    ,CONSTRAINT fk_custo_aplicacao FOREIGN KEY (id_aplicacao) REFERENCES aplicacao(id_aplicacao)
+    ,CONSTRAINT fk_custo_ccusto FOREIGN KEY (id_ccusto) REFERENCES ccusto(id_ccusto)
+    ,CONSTRAINT fk_custo_produto FOREIGN KEY (id_produto) REFERENCES produto(id_produto)
+);
 
 
 INSERT INTO estado(nome, sigla) VALUES ('PARANA', 'PR');
@@ -137,12 +139,37 @@ INSERT INTO equipe(nome, qt_integrantes)  VALUES('TURMA DO TIKO', 20);
 INSERT INTO equipe(nome, qt_integrantes)  VALUES('TURMA DO PEDRO', 10);
 INSERT INTO equipe(nome, qt_integrantes)  VALUES('TURMA DA CARLA', 30);
 
-INSERT INTO aplicacao(cod_aplicacao, dt_aplicacao, qt_aplicacao, area_aplicada, id_fazenda, id_produto, id_operacao, id_equipe)
-	VALUES(2500, '2022-07-04', 12, 35.7, 2, 1, 3, 2);
-INSERT INTO aplicacao(cod_aplicacao, dt_aplicacao, qt_aplicacao, area_aplicada, id_fazenda, id_produto, id_operacao, id_equipe)
-	VALUES(2501,'2022-05-20', 37, 25.4, 1, 2, 1, 3);
-INSERT INTO aplicacao(cod_aplicacao, dt_aplicacao, qt_aplicacao, area_aplicada, id_fazenda, id_produto, id_operacao, id_equipe)
-	VALUES(2502, '2022-03-04', 48, 45.9, 3, 3, 2, 1);
+INSERT INTO equipamento(cod_equipamento, tp_equipamento, dt_aquisicao, id_fazenda) VALUES (222, 'T', '2021-01-27', 2);
+INSERT INTO equipamento(cod_equipamento, tp_equipamento, dt_aquisicao, id_fazenda) VALUES (249, 'T', '2021-04-01', 1);
+INSERT INTO equipamento(cod_equipamento, tp_equipamento, dt_aquisicao, id_fazenda) VALUES (232, 'T', '2022-05-30', 3);
+
+INSERT INTO estoque(cod_estoque, desc_estoque) VALUES (100, 'ESTOQUE SANTA LUIZA');
+INSERT INTO estoque(cod_estoque, desc_estoque) VALUES (101, 'ESTOQUE URUPES');
+INSERT INTO estoque(cod_estoque, desc_estoque) VALUES (102, 'ESTOQUE MINUANO');
+
+INSERT INTO aplicacao(cod_aplicacao, dt_aplicacao, qt_aplicacao, area_aplicada, id_fazenda, id_produto, id_operacao, id_equipe, id_estoque, id_equipamento)
+	VALUES(2500, '2022-07-04', 12, 35.7, 2, 1, 3, 2, 1, 2);
+INSERT INTO aplicacao(cod_aplicacao, dt_aplicacao, qt_aplicacao, area_aplicada, id_fazenda, id_produto, id_operacao, id_equipe, id_estoque, id_equipamento)
+	VALUES(2501,'2022-05-20', 37, 25.4, 1, 2, 1, 3, 1, 1);
+INSERT INTO aplicacao(cod_aplicacao, dt_aplicacao, qt_aplicacao, area_aplicada, id_fazenda, id_produto, id_operacao, id_equipe, id_estoque, id_equipamento)
+	VALUES(2502, '2022-03-04', 48, 45.9, 3, 3, 2, 1, 3, 2);
     
-INSERT INTO equipamento(cod_equipamento, tp_equipamento, dt_aquisicao, id_fazenda) 
-	VALUES (222, 'T', 2021-01-27, 2)
+INSERT INTO ccusto(cod_ccusto, desc_ccusto) VALUES (420001, 'TRATOS CULTURAIS SANTA LUIZA');
+INSERT INTO ccusto(cod_ccusto, desc_ccusto) VALUES (420002, 'TRATOS CULTURAIS URUPES');
+INSERT INTO ccusto(cod_ccusto, desc_ccusto) VALUES (420003, 'TRATOS CULTURAIS MINUANO');
+
+INSERT INTO custo(dt_custo, qt_consumo, vl_consumo, id_aplicacao, id_ccusto, id_produto) VALUES ('2022-05-30', 320.5, 50.00, 2, 1, 2);
+INSERT INTO custo(dt_custo, qt_consumo, vl_consumo, ativo, id_aplicacao, id_ccusto, id_produto) VALUES ('2022-04-05', 1000, 10.00, 'F', 3, 3, 1);
+INSERT INTO custo(dt_custo, qt_consumo, vl_consumo, id_aplicacao, id_ccusto, id_produto) VALUES ('2022-07-16', 320.5, 50.00, 1, 2, 3);
+
+SELECT * FROM estado;
+SELECT * FROM cidade;
+SELECT * FROM fazenda;
+SELECT * FROM produto;
+SELECT * FROM operacao;
+SELECT * FROM equipe;
+SELECT * FROM estoque;
+SELECT * FROM equipamento;
+SELECT * FROM aplicacao;
+SELECT * FROM ccusto;
+SELECT * FROM custo;
