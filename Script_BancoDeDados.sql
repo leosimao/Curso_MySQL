@@ -106,6 +106,8 @@ CREATE TABLE custo(
 );
 
 ALTER TABLE custo CHANGE dt_custo dt_historico DATETIME NOT NULL;
+ALTER TABLE aplicacao ADD COLUMN dt_ultimo_update DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
+ALTER TABLE custo ADD COLUMN dt_ultimo_update DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
 
 INSERT INTO estado(nome, sigla) VALUES ('PARANA', 'PR');
 INSERT INTO estado(nome, sigla) VALUES ('SAO PAULO', 'SP');
@@ -163,6 +165,15 @@ INSERT INTO custo(dt_historico, qt_consumo, vl_consumo, id_aplicacao, id_ccusto,
 INSERT INTO custo(dt_historico, qt_consumo, vl_consumo, ativo, id_aplicacao, id_ccusto, id_produto) VALUES ('2022-04-05', 1000, 10.00, 'F', 3, 3, 1);
 INSERT INTO custo(dt_historico, qt_consumo, vl_consumo, id_aplicacao, id_ccusto, id_produto) VALUES ('2022-07-16', 320.5, 50.00, 1, 2, 3);
 
+UPDATE custo SET ativo = 'A' WHERE id_aplicacao = 3;
+UPDATE equipe SET qt_integrantes = 15 WHERE id = 1;
+UPDATE operacao SET tipo_operacao = 'MECANIZADA' WHERE cod_operacao = 145;
+/*
+Irei colocar o DELETE aqui dentro para que não intefira em nenhum resultado distinto da modelagem
+	DELETE FROM fazenda WHERE id_cidade = 1;
+    DELETE FROM aplicacao;
+    DELETE FROM equipamento WHERE cod_equipamento = 232
+*/
 SELECT * FROM estado;
 SELECT * FROM cidade;
 SELECT * FROM fazenda;
