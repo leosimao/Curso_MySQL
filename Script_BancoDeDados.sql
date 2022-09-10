@@ -189,7 +189,24 @@ SELECT * FROM operacao;
 SELECT * FROM equipe;
 SELECT * FROM estoque;
 SELECT * FROM equipamento;
-SELECT * FROM aplicacao;
+
+SELECT  
+		fz.nome
+        ,eqp.cod_equipamento
+        ,opr.nome
+        ,prd.nome
+        ,c.qt_consumo
+        ,c.vl_consumo
+FROM 
+	aplicacao ap
+	
+	INNER JOIN fazenda fz on fz.id = ap.id_fazenda
+    INNER JOIN equipamento eqp on eqp.id = ap.id_equipamento
+    INNER JOIN produto prd on prd.id = ap.id_produto
+    INNER JOIN custo c on c.id_aplicacao = ap.id AND c.id_produto = prd.id
+    INNER JOIN operacao opr on opr.id = ap.id_operacao
+    
+;
 SELECT  
 	cc.cod_ccusto
 	,cc.desc_ccusto
